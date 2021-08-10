@@ -1,87 +1,90 @@
 //
 //  main.swift
-//  2Kasperovich Dmitii
+//  3Kasperovich_D
 //
-//  Created by Дмитрий Касперович on 08.08.2021.
+//  Created by Дмитрий Касперович on 09.08.2021.
 //
 
 import Foundation
 
-print("Hello, World!")
 
-
-//Написать функцию, которая определяет, четное число или нет.
-//Написать функцию, которая определяет, делится ли число без остатка на 3.
-func divisible(value: Int, n: Int) -> Bool   {
-    return (value % n == 0)
+enum Engine: String {
+    case On = "Включен"
+    case Off = "Выключен"
 }
-let Number = divisible(value: 10, n: 2)
-let Number1 = divisible(value: 10, n: 3)
-print(Number ? "Четное" : "Нечетное")
-print(Number1 ? "Делится" : "Не Делится")
-
-//Создать возрастающий массив из 100 чисел.
-
-var numbers = Array (1...100)
-
-print(numbers)
-
-//Удалить из этого массива все четные числа и все числа, которые не делятся на 3.
-var Array1: [Int] = []
-for i in 0...100 {
-    Array1.append(i)
+enum Window: String {
+    case Open = "Отрыты"
+    case Close = "Закрыты"
+}
+enum Trunk: String {
+    case Yes = "Да"
+    case Not = "Нет"
+}
+ 
+struct Car: CustomStringConvertible {
     
-    for value1 in Array1 {
-        if (value1 % 2) == 0 || (value1 % 3) != 0 {
-            Array1.remove(at: Array1.firstIndex(of: value1)!)
-            
+    var description: String {
+        return """
+           Марка: \(marka)
+           Год выпуска: \(yearOfRelease)
+           Окна: \(window.rawValue)
+           Объем Багажника: \(capacity)
+           Двигатель: \(engine.rawValue)
+           Гружоный: \(trunk.rawValue)
+           
+           """
+    }
+
+    var marka: String
+    var yearOfRelease: Int
+    var capacity: Int
+    var engine: Engine
+    var window: Window
+    var trunk: Trunk
+
+    mutating func setWindow(window: Window) {
+        self.window = window
+    
+    }
+    func printYear() {
+        print("Автомобиль \(yearOfRelease) года выпуска")
+    }
+    
+}
+
+var car1 = Car(marka: "Rover", yearOfRelease: 2020, capacity: 400, engine: .On, window: .Open, trunk: .Not)
+var car2 = Car(marka: "Volvo", yearOfRelease: 2000, capacity: 1000, engine: .Off, window: .Close, trunk: .Yes)
+
+
+car2.yearOfRelease = 2005
+car2.printYear()
+car1.setWindow(window: .Close)
+
+
+print(car1)
+print(car2)
+
+
+let Possibility = [
+("Запус двигателя", "Открыть окно", "Погрузить",
+    "Заглушить двигатель", "Закрыть окно", "Выгрузить")]
+
+enum PrintPossibilityMode: String {
+    case Variant1
+    case Variant2
+    
+}
+func PrintPossibility ( Possibility: [(String, String, String, String, String, String)], mode:PrintPossibilityMode){
+print (mode.rawValue, ":\n")
+    for i in Possibility{
+        switch mode {
+        case .Variant1:
+            print(i.0,",", i.1,"," ,i.2)
+        case .Variant2:
+            print(i.3,",", i.4,",", i.5)
         }
     }
 }
-
-print(Array1)
-//Написать функцию, которая добавляет в массив новое число Фибоначчи, и добавить при помощи нее 50 элементов.
-
-//Числа Фибоначчи определяются соотношениями Fn=Fn-1 + Fn-2.
-
-
-
-var array2: [Int] = [1, 1]
-for i in 2...50 {
-array2.append(array2[i - 1] + array2[i - 2])
-}
-print(array2)
-
-
-
-/*Заполнить массив из 100 элементов различными простыми числами. Натуральное число, большее единицы, называется простым, если оно делится только на себя и на единицу. Для нахождения всех простых чисел не больше заданного числа n, следуя методу Эратосфена, нужно выполнить следующие шаги:
-
-a. Выписать подряд все целые числа от двух до n (2, 3, 4, ..., n).
-b. Пусть переменная p изначально равна двум — первому простому числу.
-c. Зачеркнуть в списке числа от 2 + p до n, считая шагом p..
-d. Найти первое не зачёркнутое число в списке, большее, чем p, и присвоить значению переменной p это число.
-e. Повторять шаги c и d, пока возможно.
-
-*/
-
-func naturalNumbers(arrayNumbers: [Int]) -> [Int] { // объявляем функцию
-
-  var primes: [Int] = [] // создаем пустой массив
-    var newA = arrayNumbers // присваиваем входящий массив переменной newA
-    while let newP = newA.first { //присваиваем константе newP значение первого значение в массиве
-        primes.append(newP)
-        newA = newA.filter { $0 % newP != 0 } //фильтруем массив и присваиваем новые
-        print(newA)
-        }
-
-      return primes //возвращаем массив
-
- }
-
-print(naturalNumbers(arrayNumbers: Array(2...100))) // выводим результат
-
-
-
-
+PrintPossibility( Possibility: Possibility, mode: .Variant2)
 
 
