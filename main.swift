@@ -1,142 +1,91 @@
 //
 //  main.swift
-//  5Kasperovich
+//  6Kasperovich
 //
-//  Created by Дмитрий Касперович on 19.08.2021.
+//  Created by Дмитрий Касперович on 22.08.2021.
 //
 
 import Foundation
 
-
-
-protocol Car {
-
-    var statWindow: StatWindow {get set}
-    var marka: String {get}
-    var statEngine: StatEngine {get set}
-    
-    func  statwindow()
-    func  statengine()
+struct Repka {
+    var name: String
+    var place: Int
 }
 
-enum Privod: String {
-    case full = "Полный привод"
-    case notFull = "Не полный привод"
-}
-
-enum StatWindow: String {
-    case Open = "Открыты"
-    case Close = "Закрыты"}
-
-enum StatEngine: String {
-    case On = "Включен"
-    case Off =  "Выключен"}
-
-extension Car {
-   
-    
-    
-    func statwindow() {
-      if statWindow == .Open{
-           print ("\(marka) Окна открыты")
+extension Repka: CustomStringConvertible {
+    var description : String {
+        return "Name: \(name), Place: \(place)"
     }
-        else if statWindow == .Close {
-           print("\(marka) Окна закрыты")
+}
+
+
+struct Queue <T> {
+    var elements: [T] = []
+    
+    var isEmpty: Bool {
+        return elements.count == 0
+    }
+    
+    mutating func push(element: T) {
+        elements.append(element)
+    }
+    mutating func pop()->T {
+        return elements.removeLast()
+    }
+    
+     var head: T? {
+        if isEmpty {
+            print("Элементы не найдены. Массив пуст")
+            return nil
+        } else {
+            print("Последний Элемент \(elements.last!)")
+            return elements.last
         }
     }
-    func statengine() {
-        if statEngine == .On{
-            print ("\(marka) Двигатель запущен")
+    
+     var front: T? {
+        if isEmpty {
+            print("Элементы не найдены. Массив пуст")
+            return nil
+        } else {
+            print("Первый элемент  \(elements.first!)")
+            return elements.first
         }
-        else if statEngine == .Off {
-            print("\(marka) Двигатель заглушен")
+    }
+    
+    func printMyRepka() {
+        print(elements)
+    }
+    
+    subscript(index: Int) -> T? {
+            guard index < elements.count, index >= 0 else { return nil }
+            return elements[index]
         }
+}
+
+extension Queue {
+    func myFilter(predicate:(T) -> Bool) -> [T] {
+        var result = [T]()
+        for i in elements {
+            if predicate(i) {
+                result.append(i)
+            }
+        }
+        return result
     }
 }
 
-class SportCar: Car, CustomStringConvertible {
-    
-    var description: String {
-        return """
-             Марка: \(marka)
-             Статус Окна: \(statWindow.rawValue)
-             Статус Двигателя: \(statEngine.rawValue)
-             Какой привод: \(privod.rawValue)
-             """
-    }
-    
-    var statWindow: StatWindow
-    var marka: String
-    var statEngine: StatEngine
-    var privod : Privod
-    
-    init(statWindow: StatWindow, marka: String, statEngine: StatEngine, privod : Privod){
-        self.privod = privod
-        self.marka = marka
-        self.statEngine = statEngine
-        self.statWindow = statWindow
-    }
-    func privodCar(privod: Privod) {
-        
-        self.privod = privod
-        print("У \(marka) теперь \(privod.rawValue)")
-        
+var pupil = Queue<Repka>()
+pupil.push(element: .init(name: "Дед", place: 1))
+pupil.push(element: .init(name: "Бабка", place: 2))
+pupil.push(element: .init(name: "Вунчка", place: 3))
+pupil.push(element: .init(name: "Жучка", place: 4))
+pupil.push(element: .init(name: "Кошка", place: 5))
+pupil.push(element: .init(name: "Мышка", place: 6))
+print(pupil[2]!)
 
-    }
-}
+pupil.printMyRepka()
 
-class trackCar: Car, CustomStringConvertible {
-    var description: String {
-        return """
-                 Марка: \(marka)
-                 Статус Окна: \(statWindow.rawValue)
-                 Статус Двигателя: \(statEngine.rawValue)
-                 Наличие Цистерны: \(statusCicterna.rawValue)
-                 """
-    }
-    
-    var statWindow: StatWindow
-    var marka: String
-    var statEngine: StatEngine
-    var statusCicterna : StatusCicterna
-    
-    init(statWindow: StatWindow, marka: String, statEngine: StatEngine, statusCicterna : StatusCicterna){
-        self.statusCicterna = statusCicterna
-        self.marka = marka
-        self.statEngine = statEngine
-        self.statWindow = statWindow
-    }
-    enum StatusCicterna: String {
-        case Yes = "Цистерна прицеплена"
-        case Not = "Цистерна отцеплена"}
-    
-    func trackCar(statusCicterna: StatusCicterna) {
-        
-        self.statusCicterna = statusCicterna
-        print("\(statusCicterna.rawValue) у машины \(marka)" )
-        
-    }
-}
+let honoursPupil = pupil.myFilter(predicate: {$0.place == 3})
+print(honoursPupil)
 
-var sportCar1 = SportCar(statWindow: .Open, marka: "BMW", statEngine: .On, privod: .full)
-var sportCar2 = SportCar(statWindow: .Close, marka: "HONDA", statEngine: .Off, privod: .notFull)
-
-
-
-var trackCar1 = trackCar(statWindow: .Open, marka: "VOLVO", statEngine: .On, statusCicterna: .Yes)
-var trackCar2 = trackCar(statWindow: .Close, marka: "IVEKO", statEngine: .Off, statusCicterna: .Not)
-
-//print(sportCar1)
-//print(sportCar2)
-//print(trackCar1)
-//print(trackCar2)
-
-
-sportCar1.privodCar(privod: .notFull)
-sportCar2.statEngine = .On
-trackCar1.trackCar(statusCicterna: .Not)
-trackCar2.statWindow = .Open
-print(sportCar1)
-print(sportCar2)
-print(trackCar1)
-print(trackCar2)
