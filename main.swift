@@ -1,91 +1,142 @@
 //
 //  main.swift
-//  6Kasperovich
+//  7Kasperovich
 //
-//  Created by Дмитрий Касперович on 22.08.2021.
+//  Created by Дмитрий Касперович on 25.08.2021.
 //
 
 import Foundation
 
-struct Repka {
-    var name: String
-    var place: Int
+enum DepositCardErroor: Error {
+    
+    case incorrectPinCod (Pin: Int)
+    case insufficientCodMoney (Money: Double)
+    case frozzeCadr
 }
 
-extension Repka: CustomStringConvertible {
-    var description : String {
-        return "Name: \(name), Place: \(place)"
-    }
+struct thing {
+    var price: Double
 }
 
-
-struct Queue <T> {
-    var elements: [T] = []
+class DepositCardOperation {
+    var balance: Double = 30000
+    var PinCod: Int = 1234
+    var BlockCard = false
     
-    var isEmpty: Bool {
-        return elements.count == 0
-    }
-    
-    mutating func push(element: T) {
-        elements.append(element)
-    }
-    mutating func pop()->T {
-        return elements.removeLast()
-    }
-    
-     var head: T? {
-        if isEmpty {
-            print("Элементы не найдены. Массив пуст")
-            return nil
-        } else {
-            print("Последний Элемент \(elements.last!)")
-            return elements.last
+    func buyThing(thing: thing) throws {
+        if BlockCard {
+        throw DepositCardErroor.frozzeCadr
         }
-    }
-    
-     var front: T? {
-        if isEmpty {
-            print("Элементы не найдены. Массив пуст")
-            return nil
-        } else {
-            print("Первый элемент  \(elements.first!)")
-            return elements.first
+        guard PinCod == 1234 else {
+            throw DepositCardErroor.incorrectPinCod(Pin: 1234)
         }
-    }
-    
-    func printMyRepka() {
-        print(elements)
-    }
-    
-    subscript(index: Int) -> T? {
-            guard index < elements.count, index >= 0 else { return nil }
-            return elements[index]
-        }
-}
-
-extension Queue {
-    func myFilter(predicate:(T) -> Bool) -> [T] {
-        var result = [T]()
-        for i in elements {
-            if predicate(i) {
-                result.append(i)
+       
+        guard thing.price <= (self.balance)  else {
+                throw DepositCardErroor.insufficientCodMoney(Money: balance - thing.price)
             }
-        }
-        return result
+        
+        balance = self.balance - thing.price
+        
     }
+    func depositCard(SomeMoney: Double) {
+        balance = self.balance + SomeMoney
+    }
+
+    func balanceCard() {
+        print("Баланс карты \(balance) рублей.")
+    }
+    
+    func cardStatus(BlockCard: Bool){
+        switch BlockCard {
+        case true:
+            self.BlockCard = true
+            
+        case false:
+            self.BlockCard = false
+        }
+}
 }
 
-var pupil = Queue<Repka>()
-pupil.push(element: .init(name: "Дед", place: 1))
-pupil.push(element: .init(name: "Бабка", place: 2))
-pupil.push(element: .init(name: "Вунчка", place: 3))
-pupil.push(element: .init(name: "Жучка", place: 4))
-pupil.push(element: .init(name: "Кошка", place: 5))
-pupil.push(element: .init(name: "Мышка", place: 6))
-print(pupil[2]!)
+extension DepositCardErroor: CustomStringConvertible {
+    var description: String {
+        switch self {
+        case .insufficientCodMoney (_): return "На карте недостаточно денег для проведения этой операции."
+        case .frozzeCadr: return "Ваш карта по какой-то причине заморожена."
+        case .incorrectPinCod(Pin: _): return "Не правильный пинкод, введите еще раз."
+            
+        }
+    }
+}
+let operachion = DepositCardOperation()
 
-pupil.printMyRepka()
+operachion.balanceCard()
 
-let honoursPupil = pupil.myFilter(predicate: {$0.place == 3})
-print(honoursPupil)
+do {
+    try operachion.buyThing(thing: .init(price: 10000))
+}
+catch let error as DepositCardErroor {
+    print(error.description)
+}
+operachion.balanceCard()
 
+operachion.depositCard(SomeMoney: 50000)
+
+operachion.balanceCard()
+
+do {
+    try operachion.buyThing(thing: .init(price: 90000))
+}
+catch let error as DepositCardErroor {
+    print(error.description)
+}
+
+operachion.balanceCard()
+
+//operachion.cardStatus(BlockCard: true)
+//operachion.PinCod = 1111
+
+do {
+    try operachion.buyThing(thing: .init(price: 11000))
+}
+catch let error as DepositCardErroor {
+    print(error.description)
+}
+operachion.balanceCard()
+
+operachion.cardStatus(BlockCard: true)
+do {
+    try operachion.buyThing(thing: .init(price: 10000))
+}
+catch let error as DepositCardErroor {
+    print(error.description)
+}
+operachion.balanceCard()
+
+operachion.cardStatus(BlockCard: false)
+
+do {
+    try operachion.buyThing(thing: .init(price: 10000))
+}
+catch let error as DepositCardErroor {
+    print(error.description)
+}
+operachion.balanceCard()
+
+operachion.PinCod = 1111
+do {
+    try operachion.buyThing(thing: .init(price: 10000))
+}
+catch let error as DepositCardErroor {
+    print(error.description)
+}
+operachion.balanceCard()
+
+
+operachion.PinCod = 1234
+do {
+    try operachion.buyThing(thing: .init(price: 10000))
+}
+catch let error as DepositCardErroor {
+    print(error.description)
+}
+operachion.balanceCard()
